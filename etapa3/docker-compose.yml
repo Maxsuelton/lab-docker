@@ -1,0 +1,38 @@
+name: lab
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: lab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: lab
+    volumes:
+      - dados_banco:/var/lib/postgresql/data
+    networks:
+      - lab_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lab"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:4
+    container_name: lab-adminer
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    networks:
+      - lab_net
+
+volumes:
+  dados_banco:
+
+networks:
+  lab_net:
+    driver: bridge
