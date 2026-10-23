@@ -59,4 +59,25 @@ Resultado: registro permaneceu.
 
 **Conclusão:** `down` para o serviço e preserva os dados. `down -v` destrói o volume junto. Em ambiente real, essa diferença é a linha entre reiniciar um serviço e perder um banco.
 
+
+## Etapa 3 — Rede entre containers
+
+**Objetivo:** fazer dois containers se comunicarem pela rede interna do Compose.
+
+Comandos executados:
+
+- `cd etapa3`
+- `docker compose up -d`
+- `docker compose ps`
+- `docker exec -it lab-postgres pg_isready -U postgres -d lab`
+
+**Resultado:** rede `lab_lab_net` criada, `lab-postgres` em `Up (healthy)` e `lab-adminer` em `Up` na porta `8081`. O `pg_isready` retornou `accepting connections`.
+
+Acesso ao Adminer em `localhost:8081` com sistema `PostgreSQL`, servidor `db`, usuário `postgres`, senha `senha123` e base `lab`. A base estava vazia — o volume havia sido removido no `down -v` da etapa anterior.
+
 <img width="1915" height="676" alt="etapa3-adminer" src="https://github.com/user-attachments/assets/adcf117c-676f-423e-850c-1d075312e44a" />
+
+**Conclusão:** dentro da rede do Compose, cada serviço é resolvido pelo próprio nome — por isso o campo servidor recebe `db`, e não `localhost`. O Postgres não expõe a porta 5432 ao host porque apenas o Adminer se conecta a ele, pela rede interna. O `depends_on` com `condition: service_healthy` garantiu que o Adminer só subisse após o banco responder ao `pg_isready`.
+
+
+
