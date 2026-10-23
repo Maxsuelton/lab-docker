@@ -54,6 +54,7 @@ Resultado: registro permaneceu.
     docker compose down -v
     docker compose up -d
     docker exec -it lab-postgres psql -U postgres -d lab -c "SELECT * FROM clientes;"
+<img width="1883" height="393" alt="printsetapa3-compose-up" src="https://github.com/user-attachments/assets/562a96b0-c2fb-44a8-8f34-8ccbbae0de93" />
 
 ![Erro após down -v](prints/etapa2-down-v-erro.png)
 
