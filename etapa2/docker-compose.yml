@@ -1,0 +1,17 @@
+name: lab
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: lab-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: lab
+    volumes:
+      - dados_banco:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  dados_banco:
