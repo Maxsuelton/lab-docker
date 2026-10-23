@@ -63,12 +63,15 @@ Resultado: registro permaneceu.
 
 **Objetivo:** fazer dois containers se comunicarem pela rede interna do Compose.
 
-> Em andamento.
+    cd etapa3
+    docker compose up -d
+    docker compose ps
+    docker exec -it lab-postgres pg_isready -U postgres -d lab
 
-## O que ficou do laboratório
+**Resultado:** rede `lab_lab_net` criada, `lab-postgres` em `Up (healthy)` e `lab-adminer` em `Up` na porta `8081`. O `pg_isready` retornou `accepting connections`.
 
-Container em execução não é o mesmo que container saudável — e parar não é o mesmo que destruir. A maior parte dos incidentes com Docker em produção nasce de não saber diferenciar essas coisas.
+![Containers no ar com Postgres healthy](prints/etapa3-compose-up.png)
 
-## Observação
+Acesso ao Adminer em `localhost:8081`, com servidor `db`, usuário `postgres`, senha `senha123`, base `lab`.
 
-As credenciais do Postgres são de laboratório, em texto puro no Compose. Não use este padrão em ambiente real — ali a senha vem de variável de ambiente ou de um gerenciador de segredos.
+**Conclusão:** dentro da rede do Compose, cada serviço é resolvido pelo próprio nome — por isso o campo servidor recebe `db`, não `localhost`. O Postgres deixou de expor a porta 5432 ao host porque apenas o Adminer se conecta a ele, pela rede interna. O `depends_on` com `condition: service_healthy` garantiu que o Adminer só subisse após o banco responder ao `pg_isready`.
